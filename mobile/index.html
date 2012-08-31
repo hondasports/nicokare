@@ -1,0 +1,113 @@
+<!DOCTYPE html> 
+<html lang="ja"> 
+<head> 
+	<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="expires" content="0" />
+
+	<title>ニコニコカレンダー</title>
+	<script type="text/javascript" src="/u/17062469/nicokare/js/jquery.js"></script>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+	<script type="text/javascript" src="/u/17062469/nicokare/js/jquery.mobile.js"></script>
+	<script type="text/javascript" src="/u/17062469/nicokare/js/common.js"></script>
+
+	<!-- more info http://desperadoes.biz/style/selector/index.php in Class/ID selectors section -->
+	<style>
+		body.connected #login { display: none; }
+		body.connected #logout { display: block; }
+		body.not_connected #login { display: block; }
+		body.not_connected #logout { display: none; }
+		.wordbreak{
+			overflow: visible;
+			white-space: normal;
+		}
+	</style>
+</head>
+<body>
+<div id="fb-root"></div>
+<script type=text/javascript>
+	(function() {
+		var e = document.createElement( 'script' );
+		e.async = true;
+		e.src = document.location.protocol + '//connect.facebook.net/ja_JP/all.js';
+		document.getElementById( 'fb-root' ).appendChild(e);
+	}());
+
+	window.fbAsyncInit = function() {
+		init();
+		
+		// ログイン状態の変化でリロードをする
+		FB.Event.subscribe('auth.statusChange', handleStatusChange );
+	};
+
+	function handleStatusChange(response) {
+		document.body.className = response.authResponse ? 'connected' : 'not_connected';
+	}
+
+	function loginUser(){
+		FB.login(function(response) { }, {scope:'publish_action, read_stream'});
+	}
+
+	function writeHistory( response ){
+		console.log(response);
+		$('#historySection').empty();
+
+		var dataHandlerObject = new FqlDataHandler();
+		var data = dataHandlerObject.getData( response );
+
+		for( var index=0 ; index<data.length ; index++ ){
+			var row = data[index];
+			$('#historySection').append([
+			                             '<li>',
+			                             	'<h2>' + row.getDate() + '</h2>',
+			                             	'<h2>' + row.getEmotion() + '</h2>',
+			                             	'<p class="wordbreak">' + row.getComment() + '</p>',
+			                             '</li>'
+			                             ].join("")).listview('refresh');
+			$('#historySection').trigger('create');
+		}
+	}
+	
+</script>
+<div id="login">
+  <p><button onClick="loginUser();">Login</button></p>
+</div>
+<div id="logout">
+	<!-- Menu -->
+	<div data-role="page" id="index" data-theme="b">
+		<div data-role="header" data-theme="b">
+			<h1>ニコカレ</h1>
+		</div>
+		<div data-role="content">
+			<ul data-role="listview" data-theme="b" data-inset="true">
+				<li data-role="list-divider">Menu</li>
+				<li><a href="#contentPost">投稿</a></li>
+				<li><a href="#showHistory">過去歴表示</a></li>
+ 				<li><a href="" onClick="FB.logout();">ログアウト</a></li>
+			</ul>
+		</div>
+	</div>
+	
+	<!-- Contents : Post -->
+	<div data-role="page" id="contentPost" data-theme="b">
+		<label>今日一日の気分は<select id="emotion"></select></label>
+		<label>一言あれば : <input type="text" id="comment" value=""></label>
+		<p id="post_message"><button onClick="javascript:postMessage()">結果を投稿</button></p>
+	</div>
+	
+	<!--  Contents History -->
+	<div data-role="page" id="showHistory" data-theme="b">
+		<div data-role="header" data-theme="b">
+			<a href="#index" data-icon="arrow-l" data-direction="reverse">MENUへ戻る</a>
+			<h1>ニコカレ</h1>
+		</div>
+		<div data-role="content">
+			<p><button onClick="javascript:showHistory()">過去歴表示</button></p>
+			<ul data-role="listview" data-inset="true" id="historySection"></ul>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

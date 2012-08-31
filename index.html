@@ -1,0 +1,76 @@
+<!DOCTYPE html> 
+<html lang="ja"> 
+<head> 
+<meta charset="UTF-8">
+	<title>ニコニコカレンダー</title>
+	<script type="text/javascript" src="/u/17062469/nicokare/js/jquery.js"></script>
+	<script type="text/javascript" src="/u/17062469/nicokare/js/common.js"></script>
+</head>
+<body>
+<div id="fb-root"></div>
+<script type="text/javascript">
+	(function() {
+		var e = document.createElement( 'script' );
+		e.async = true;
+		e.src = document.location.protocol + '//connect.facebook.net/ja_JP/all.js';
+		document.getElementById( 'fb-root' ).appendChild(e);
+	}());
+
+	// Initialize
+	window.fbAsyncInit =　function (){
+
+		init();
+
+		// Check login status
+		window.FB.getLoginStatus(
+			function( response ) {
+	
+				if( response.status === 'connected' ) {
+					// Already connected
+				} else if( response.status === 'not_authorized' ){
+					// Not authorized for this app
+	
+				} else {
+					FB.login(
+						function( response ){
+							// Not logged in.
+							if( response.authResponse ){
+							} else {
+							}
+						}, { scope: 'publish_action, read_stream' }
+					);
+				}
+			}
+		);
+	}
+
+	// ToDo : コピペコードなので、見れたものに修正すること。
+	function writeHistory( response ){
+		console.log('ccc');
+		$('#historySection').empty();
+
+		var dataHandlerObject = new FqlDataHandler();
+		var data = dataHandlerObject.getData( response );
+
+		for( var index=0 ; index<data.length ; index++ ){
+			var row = data[index];
+			$('#historySection').append([
+			                             '<li>',
+			                             	'<h3>' + row.getDate() + '</h2>',
+			                             	'<h3>' + row.getEmotion() + '</h2>',
+			                             	'<p class="wordbreak">' + row.getComment() + '</p>',
+			                             '</li>'
+			                             ].join(""));
+		}
+	}
+
+</script>
+<div id="contentPostSection">
+	<label>今日一日の気分は <select id="emotion"></select>。</label>
+	<label>一言あれば : <input type="text" id="comment" value="" size="30"></label>
+	<p id="post_message"><button onClick="javascript:postMessage()">投稿</button></p>
+</div>
+	<p><button onClick="javascript:showHistory()">過去歴表示</button></p>
+	<div id="historySection"></div>
+</body>
+</html>
