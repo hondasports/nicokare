@@ -1,7 +1,7 @@
 //----------
 // Configuration
 //----------
-var EMOTIONS = {Blank:'------', Bad:'悪かった', Normal:'ふつう', Good:'良かった'};
+var EMOTIONS = {blank:'------', bad:'悪かった', normal:'ふつう', good:'良かった'};
 var FB_INIT_INFO = {
 		appId:'194549987342423',
 		cookie:true,
@@ -19,25 +19,34 @@ var TextUtil = function( string ){
 	string.match( /(.+)\s\[(.+)\]/g );
 	this.emotion = RegExp.$1;
 	this.comment = RegExp.$2;
-
+	
 	if( this.comment == '' ){
 		this.emotion = this.string;
 	}
 };
 	TextUtil.prototype = {
-		getEmotion : function(){ return this.emotion; },
-		getComment : function(){ return this.comment; }
+		getEmotion		: function(){ return this.emotion; },
+		getEmotionKey	: function(){ 
+			for( var key in EMOTIONS ){
+				if( EMOTIONS[key] == this.emotion ){
+					return key;
+				}
+			}
+		},
+		getComment		: function(){ return this.comment; }
 	};
 
-var NICODATA = function(date, emotion, comment){
+var NICODATA = function(date, emotion, comment, emotionKey){
 	this.date		= date;
 	this.emotion	= emotion;
+	this.emotionKey	= emotionKey;
 	this.comment	= comment;
 };
 	NICODATA.prototype = {
-		getDate : function(){ return this.date; },
-		getEmotion : function(){ return this.emotion; },
-		getComment : function(){ return this.comment; }
+		getDate			: function(){ return this.date; },
+		getEmotion		: function(){ return this.emotion; },
+		getEmotionKey	: function(){ return this.emotionKey; },
+		getComment		: function(){ return this.comment; }
 	};
 	
 var FqlDataHandler = function(){};
@@ -52,7 +61,8 @@ var FqlDataHandler = function(){};
 				var textUtil	= new TextUtil( row.message );
 				var nicodata	= new NICODATA( formatDatetime(dateObj), 
 												textUtil.getEmotion(),
-												textUtil.getComment() );
+												textUtil.getComment(),
+												textUtil.getEmotionKey());
 
 				data.push( nicodata );
 			}

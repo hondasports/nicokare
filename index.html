@@ -5,6 +5,7 @@
 	<title>ニコニコカレンダー</title>
 	<script type="text/javascript" src="/u/17062469/nicokare/js/jquery.js"></script>
 	<script type="text/javascript" src="/u/17062469/nicokare/js/common.js"></script>
+	<link rel="stylesheet" type="text/css" href="/u/17062469/nicokare/css/common.css" />
 </head>
 <body>
 <div id="fb-root"></div>
@@ -61,6 +62,7 @@
 			                             	'<p class="wordbreak">' + row.getComment() + '</p>',
 			                             '</li>'
 			                             ].join(""));
+			$('#historySection li:last-child').addClass( row.getEmotionKey() );
 		}
 	}
 
@@ -71,6 +73,6 @@
 	<p id="post_message"><button onClick="javascript:postMessage()">投稿</button></p>
 </div>
 	<p><button onClick="javascript:showHistory()">過去歴表示</button></p>
-	<div id="historySection"></div>
+	<ul id="historySection"></ul>
 </body>
 </html>

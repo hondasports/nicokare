@@ -11,6 +11,8 @@
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
 	<script type="text/javascript" src="/u/17062469/nicokare/js/jquery.mobile.js"></script>
 	<script type="text/javascript" src="/u/17062469/nicokare/js/common.js"></script>
+	<link rel="stylesheet" href="/u/17062469/nicokare/css/common.css" />
+
 
 	<!-- more info http://desperadoes.biz/style/selector/index.php in Class/ID selectors section -->
 	<style>
@@ -65,6 +67,7 @@
 			                             	'<p class="wordbreak">' + row.getComment() + '</p>',
 			                             '</li>'
 			                             ].join("")).listview('refresh');
+			$('#historySection li:last-child').addClass( row.getEmotionKey() );
 			$('#historySection').trigger('create');
 		}
 	}
@@ -75,12 +78,12 @@
 </div>
 <div id="logout">
 	<!-- Menu -->
-	<div data-role="page" id="index" data-theme="b">
-		<div data-role="header" data-theme="b">
+	<div data-role="page" id="index">
+		<div data-role="header" >
 			<h1>ニコカレ</h1>
 		</div>
 		<div data-role="content">
-			<ul data-role="listview" data-theme="b" data-inset="true">
+			<ul data-role="listview"  data-inset="true">
 				<li data-role="list-divider">Menu</li>
 				<li><a href="#contentPost">投稿</a></li>
 				<li><a href="#showHistory">過去歴表示</a></li>
@@ -90,22 +93,21 @@
 	</div>
 	
 	<!-- Contents : Post -->
-	<div data-role="page" id="contentPost" data-theme="b">
+	<div data-role="page" id="contentPost" >
 		<label>今日一日の気分は<select id="emotion"></select></label>
 		<label>一言あれば : <input type="text" id="comment" value=""></label>
 		<p id="post_message"><button onClick="javascript:postMessage()">結果を投稿</button></p>
 	</div>
 	
 	<!--  Contents History -->
-	<div data-role="page" id="showHistory" data-theme="b">
-		<div data-role="header" data-theme="b">
+	<div data-role="page" id="showHistory" >
+		<div data-role="header" >
 			<a href="#index" data-icon="arrow-l" data-direction="reverse">MENUへ戻る</a>
 			<h1>ニコカレ</h1>
 		</div>
 		<div data-role="content">
 			<p><button onClick="javascript:showHistory()">過去歴表示</button></p>
 			<ul data-role="listview" data-inset="true" id="historySection"></ul>
-			</div>
 		</div>
 	</div>
 </div>
